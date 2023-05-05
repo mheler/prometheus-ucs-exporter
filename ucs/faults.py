@@ -16,7 +16,7 @@ class Faults:
         faults = stats['FaultInst']
         metrics = defaultdict(list)
 
-        for fault in faults: metrics[fault.type + fault.severity].append(fault)
+        for fault in faults:
         fault_groups = [{ 'group': k, 'occurrences': v } for k,v in metrics.items()]
 
         for fault_group in fault_groups:
