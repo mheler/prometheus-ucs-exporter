@@ -6,7 +6,7 @@
 from collections import defaultdict
 from prometheus_client import Gauge
 
-ucs_faults_total = Gauge('ucs_faults_total', 'Faults', ['domain', 'type', 'severity'])
+ucs_faults_total = Gauge('ucs_faults_total', 'Faults', ['domain', 'type', 'description', 'dn', 'severity', 'code', 'cause'])
 
 class Faults:
     def __init__(self, domain):
@@ -17,12 +17,7 @@ class Faults:
         metrics = defaultdict(list)
 
         for fault in faults:
-        fault_groups = [{ 'group': k, 'occurrences': v } for k,v in metrics.items()]
-
-        for fault_group in fault_groups:
-            cause_type = fault_group['occurrences'][0].type
-            severity = fault_group['occurrences'][0].severity
-            occurrences = sum([int(f.occur) for f in fault_group['occurrences']])
-            labels = {'domain': self.domain, 'type': cause_type, 'severity': severity }
-            ucs_faults_total.labels(**labels).set(occurrences)
+            active = 1
+            labels = {'domain': self.domain, 'type': fault.type, 'description': fault.descr, 'dn': fault.dn, 'severity': fault.severity, 'code': fault.code, 'cause': fault.cause }
+            ucs_faults_total.labels(**labels).set(active)
         return
